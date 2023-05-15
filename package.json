@@ -1,0 +1,8 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -C ./packages/with-hooks run build",
+    "watch": "pnpm -C ./packages/with-hooks run watch"
+  }
+}

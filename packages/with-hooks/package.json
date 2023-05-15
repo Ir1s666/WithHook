@@ -1,0 +1,27 @@
+{
+  "name": "with-hooks",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/with-hooks.umd.cjs",
+  "module": "./dist/with-hooks.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/with-hooks.js",
+    "require": "./dist/with-hooks.umd.cjs"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "watch": "vite build -w"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4",
+    "vite-plugin-dts": "^2.3.0"
+  }
+}
