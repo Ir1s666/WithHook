@@ -7,7 +7,7 @@ const pkgName = pkg.name;
 export default defineConfig({
   build: {
     lib: {
-      entry: './lib/index.ts',
+      entry: './lib/index',
       name: '',
       fileName: pkgName,
       formats: ['es', 'cjs']
@@ -15,6 +15,9 @@ export default defineConfig({
     watch: {
       clearScreen: true,
       include: 'lib/*'
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom']
     }
   },
   plugins: [dts()]
