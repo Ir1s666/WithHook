@@ -6,21 +6,45 @@ interface TestProps {
 }
 
 const Test = withHooks(() => {
-  const [a, setA] = useState('abc');
-  const [b, setB] = useState('b');
+  const [count, setA] = useState({ count: 0 });
+  console.log('###', count)
   return (
     <div onClick={() => {
       // @ts-ignore
-      setA('aaaa');
+      setA({count: 7})
     }}>
-      {a}
+      {count?.count}
     </div>
   )
-})
+});
+
+// class Test2 extends React.Component {
+//   constructor(props: any) {
+//     super(props)
+//     this.state = {
+//       count: 0
+//     }
+//     // @ts-ignore
+//     window.setState = this.setState.bind(this)
+
+//   }
+
+//   click = () => {
+//     // @ts-ignore
+//     window.__current2 = this
+//     this.setState({ count: 2 })
+//   }
+
+//   render(): React.ReactNode {
+//     console.log('###this', this)
+//     return <div onClick={this.click}>Test2: {this.state.count}</div>
+//   }
+// }
 
 function App() {
   return (
     <>
+      {/* <Test2></Test2> */}
       <Test></Test>
     </>
   )

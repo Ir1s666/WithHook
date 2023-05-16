@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm -C ./packages/with-hooks run build",
-    "watch": "pnpm -C ./packages/with-hooks run watch"
+    "watch": "pnpm -C ./packages/with-hooks run watch",
+    "example": "pnpm -C ./packages/example run dev"
   }
 }
