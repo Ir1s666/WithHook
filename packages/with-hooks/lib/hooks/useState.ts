@@ -1,21 +1,22 @@
-import { getCurrentContext } from '../componentContext';
+import { getCurrentContext, } from '../componentContext';
 
 type SetState<T> = (payload: T) => void
 
 export function useState<T>(defaultState: T): [T, SetState<T>] {
-    const { component } = getCurrentContext();
-    console.log('###com', component);
+    const { component, counter } = getCurrentContext();
+    const state = component.state
+    const setters = component.__setters__
 
-    if (!component.state.hasOwnProperty('q')) {
-        // @ts-ignore
-        component.state['q'] = defaultState
+
+    if (!state.hasOwnProperty(counter)) {
+        state[counter] = defaultState
+
+        setters[counter] = (state) => {
+            component.setState({ [counter]: state })
+        }
     }
 
-    // @ts-ignore
-    return [component.state['q'], (payload) => {
-        component.setState({ ['q']: payload })
-
-    }]
+    return [state[counter], setters[counter]]
 }
 
 export default useState;

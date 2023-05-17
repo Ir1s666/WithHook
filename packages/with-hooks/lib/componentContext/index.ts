@@ -2,25 +2,30 @@ import { WithHookComp } from "..";
 // 获取当前节点上下文
 const useComponentContext = () => {
     let _currentComponent: WithHookComp;
-    let counter = 0;
+    let _stateCounter: number;
 
     const updateCurrentComponent = (component: WithHookComp) => {
         _currentComponent = component;
     }
 
     const getCurrentContext = () => {
-        let _c = counter++;
+        let _c = ++_stateCounter;
         return {
             component: _currentComponent,
             counter: _c
         }
     }
 
+    const initStateCounter = () => {
+        _stateCounter = 0
+    }
+
     return {
         updateCurrentComponent,
         getCurrentContext,
+        initStateCounter
     };
 }
 
-const { updateCurrentComponent, getCurrentContext } = useComponentContext();
-export { updateCurrentComponent, getCurrentContext }
+const { updateCurrentComponent, getCurrentContext, initStateCounter } = useComponentContext();
+export { updateCurrentComponent, getCurrentContext, initStateCounter }

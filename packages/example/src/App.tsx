@@ -1,25 +1,40 @@
 import withHooks, { useState } from "with-hooks";
-import React, { useState as useReactState } from 'react';
 
-
-const Test = withHooks(() => {
+const Test = withHooks((props: { name: string }) => {
   const [count, setCount] = useState<number>(0);
+  const [coun2t, setCount2] = useState<number>(1);
 
   return (
     <div>
-      <input onChange={(e) => {
-        const { value } = e.target;
-        setCount(Number(value))
-      }} />
-      {count}
+      <div>
+        <input onChange={(e) => {
+          const { value } = e.target;
+          setCount(Number(value))
+        }} />
+        {count}
+      </div>
+      <div>
+        <input onChange={(e) => {
+          const { value } = e.target;
+          setCount2(Number(value))
+        }} />
+        {coun2t}
+      </div>
+      <div>
+        props.name: {props.name}
+      </div>
     </div>
+
   )
 });
 
 function App() {
   return (
     <>
-      <Test></Test>
+      ---组件A---
+      <Test name={'jack'} />
+      ---组件B---
+      <Test name={'tom'} />
     </>
   )
 }
