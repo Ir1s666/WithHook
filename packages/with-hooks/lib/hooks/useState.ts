@@ -1,14 +1,17 @@
+import { getCurrentComponent } from '../componentContext';
+
 // @ts-ignore
-const useState: <S>(initialState: S) => [S, unknown] = (initialState) => {
-    const _this = window.__current__;
+const useState: <S>(initialState: S) => [S, (payload: S) => void] = (initialState) => {
+    const currentComponent = getCurrentComponent();
+    currentComponent.initialState = {
+        ['qq']: initialState
+    };
+
     // @ts-ignore
-    _this!._state_ = initialState
-
-
-    return [_this!.state, (payload: any) => {
-        console.log('###', payload)
+    return [currentComponent.state?.['qq'], (payload: S) => {
         // @ts-ignore
-        window.setState(payload)
+        currentComponent.setState({'qq': payload})
+        console.log('###setState', payload, currentComponent);
     }];
 };
 
