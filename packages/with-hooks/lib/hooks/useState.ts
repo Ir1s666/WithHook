@@ -1,18 +1,21 @@
-import { getCurrentComponent } from '../componentContext';
+import { getCurrentContext } from '../componentContext';
 
-// @ts-ignore
-const useState: <S>(initialState: S) => [S, (payload: S) => void] = (initialState) => {
-    const currentComponent = getCurrentComponent();
-    currentComponent.initialState = {
-        ['qq']: initialState
-    };
+type SetState<T> = (payload: T) => void
+
+export function useState<T>(defaultState: T): [T, SetState<T>] {
+    const { component } = getCurrentContext();
+    console.log('###com', component);
+
+    if (!component.state.hasOwnProperty('q')) {
+        // @ts-ignore
+        component.state['q'] = defaultState
+    }
 
     // @ts-ignore
-    return [currentComponent.state?.['qq'], (payload: S) => {
-        // @ts-ignore
-        currentComponent.setState({'qq': payload})
-        console.log('###setState', payload, currentComponent);
-    }];
-};
+    return [component.state['q'], (payload) => {
+        component.setState({ ['q']: payload })
+
+    }]
+}
 
 export default useState;

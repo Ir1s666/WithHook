@@ -3,27 +3,21 @@ import { updateCurrentComponent } from './componentContext';
 
 type FuncComp<T> = (props: T) => React.ReactNode;
 
-export declare class WithHookComp extends React.Component {
-  initialState: { [key: string]: any }
-}
-// 挂载各种属性
-const _bindComponent = <T = {}>(funcComp: FuncComp<T>, props: T, compInstance: WithHookComp) => {
-  // window.__current__ = compInstance;
-  updateCurrentComponent(compInstance);
+export declare class WithHookComp extends React.Component { }
 
-  // 先执行一次，挂载state
-  funcComp(props);
+// 挂载各种属性
+function _bindComponent<T = {}>(funcComp: FuncComp<T>, compInstance: WithHookComp, props: T) {
+  updateCurrentComponent(compInstance);
 
   return () => funcComp(props);
 }
 
-
 function withHooks<Props>(funcComp: (props: Props) => React.ReactNode) {
   const WithHookComp = class extends React.Component<Props>{
-    public initialState = {};
     constructor(props: Props) {
       super(props);
-      this.render = _bindComponent(funcComp, props, this);
+      this.state = {}
+      this.render = _bindComponent(funcComp, this, props);
     }
   }
 

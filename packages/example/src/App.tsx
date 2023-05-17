@@ -1,16 +1,17 @@
 import withHooks, { useState } from "with-hooks";
 import React, { useState as useReactState } from 'react';
 
+
 const Test = withHooks(() => {
-  const [counter, setA] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
 
   return (
     <div>
       <input onChange={(e) => {
         const { value } = e.target;
-        setA(Number(value))
+        setCount(Number(value))
       }} />
-      {counter}
+      {count}
     </div>
   )
 });
@@ -18,7 +19,6 @@ const Test = withHooks(() => {
 function App() {
   return (
     <>
-      {/* <Test2></Test2> */}
       <Test></Test>
     </>
   )

@@ -11,7 +11,7 @@
   "types": "./dist/index.d.ts",
   "exports": {
     "types": "./dist/index.d.ts",
-    "import": "./dist/with-hooks.js",
+    "import": "./lib/index.ts",
     "require": "./dist/with-hooks.umd.cjs"
   },
   "scripts": {
