@@ -1,41 +1,67 @@
-import withHooks, { useState } from "with-hooks";
+import withHooks, { useState, useEffect } from "with-hooks";
 
-const Test = withHooks((props: { name: string }) => {
-  const [count, setCount] = useState<number>(0);
-  const [coun2t, setCount2] = useState<number>(1);
+const Son = withHooks((props: { name: string }) => {
+  const [depCount, setDepCount] = useState<number>(0);
+  const [norCount, setNorCount] = useState<number>(0);
+  const [count, setCount] = useState<number>(() => 0);
+
+  useEffect(() => {
+    // const num = Math.random() * 10
+    // setCount(num);
+    // setCount(Math.random());
+    setCount((prev) => {
+      return prev + 1;
+    })
+    return () => {
+      console.log('注销')
+    }
+  }, [depCount, props.name]);
 
   return (
     <div>
       <div>
-        <input onChange={(e) => {
+        输入框的受控值是effect的依赖项:<input onChange={(e) => {
           const { value } = e.target;
-          setCount(Number(value))
+          setDepCount(Number(value))
         }} />
-        {count}
+        state change:{depCount}
       </div>
       <div>
-        <input onChange={(e) => {
+        输入框的受控值不是effect的依赖项:<input onChange={(e) => {
           const { value } = e.target;
-          setCount2(Number(value))
+          setNorCount(Number(value))
         }} />
-        {coun2t}
+        {norCount}
       </div>
       <div>
-        props.name: {props.name}
+        这个值在effect中被set: {count}
+      </div>
+      <div>
+        子组件props.name: {props.name}
       </div>
     </div>
 
   )
 });
 
+let i = 0;
+const nameMap = ['tom', 'lily', 'jack', ' bill'];
+const Father = withHooks(() => {
+  const [fatherName, setName] = useState('jack');
+
+  return <>
+    <div onClick={() => setName(nameMap[i++])}>
+      父组件name: {fatherName}
+    </div>
+    <Son name={(function () {
+      return fatherName
+    })()} />
+  </>
+})
+
 function App() {
   return (
-    <>
-      ---组件A---
-      <Test name={'jack'} />
-      ---组件B---
-      <Test name={'tom'} />
-    </>
+    <Father />
   )
 }
 
