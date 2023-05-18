@@ -1,24 +1,34 @@
-import withHooks, { useState } from "with-hooks";
+import React from 'react';
+import withHooks, { useState, useEffect } from "with-hooks";
 
 const Test = withHooks((props: { name: string }) => {
   const [count, setCount] = useState<number>(0);
-  const [coun2t, setCount2] = useState<number>(1);
+  const [count2, setCount2] = useState<number>(0);
+  const [count3, setCount3] = useState<number>(0);
+
+  useEffect(() => {
+    const num = Math.floor(Math.random() * 10)
+    setCount2(num);
+  }, [count]);
 
   return (
     <div>
       <div>
-        <input onChange={(e) => {
+        输入框的受控值是effect的依赖项:<input onChange={(e) => {
           const { value } = e.target;
           setCount(Number(value))
         }} />
-        {count}
+        state change:{count}
       </div>
       <div>
-        <input onChange={(e) => {
+        输入框的受控值不是effect的依赖项:<input onChange={(e) => {
           const { value } = e.target;
-          setCount2(Number(value))
+          setCount3(Number(value))
         }} />
-        {coun2t}
+        {count3}
+      </div>
+      <div>
+        这个值在effect中被set: {count2}
       </div>
       <div>
         props.name: {props.name}
@@ -33,8 +43,6 @@ function App() {
     <>
       ---组件A---
       <Test name={'jack'} />
-      ---组件B---
-      <Test name={'tom'} />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { getCurrentContext, } from '../componentContext';
+import { getCurrentContext } from '../componentContext';
 
 type SetState<T> = (payload: T) => void
 
