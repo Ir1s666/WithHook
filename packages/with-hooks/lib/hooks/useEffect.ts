@@ -5,44 +5,46 @@ type EffectCallback = () => UnsubscribeEffect | void
 type Deps = any[];
 type Effect = {
     callback: EffectCallback,
-    deps: { prev: Deps, next: Deps },
+    deps: { cur: Deps, next: Deps },
     unsubscribe: UnsubscribeEffect | void
 }
 export type Effects = { [key: number]: Effect };
 
 const useEffect = (callback: EffectCallback, deps: any[]) => {
     const { component, counter } = getCurrentContext();
+    console.log('%c###每次执行传进来的deps', 'background: yellow', deps)
 
     const effects = component.__effects__;
     if (!effects.hasOwnProperty(counter)) {
         // 初次挂载effect
-        console.log('%c###后续执行effect', 'background: blue')
+        console.log('%c###初次执行effect', 'background: cyan')
         effects[counter] = {
             callback,
-            deps: { prev: deps, next: [] },
+            deps: { cur: deps, next: deps },
             unsubscribe: undefined
         };
     } else {
         // 非初次
+        console.log('%c###后续执行effect', 'background: orange', effects[counter]);
         effects[counter] = {
             callback,
-            deps: { ...effects[counter].deps, next: deps },
-            unsubscribe: undefined
+            deps: { cur: effects[counter].deps.cur, next: deps },
+            unsubscribe: effects[counter].unsubscribe
         }
-        console.log('%c###后续执行effect', 'background: orange');
+        console.log('%c###后续执行effect结束', 'background: red', effects[counter]);
+
     }
 };
 
-const compareDepsAndReturnNewDeps = (prev: any[], next: any[]) => {
+const compareDepsAndReturnNewDeps = (cur: any[], next: any[]) => {
     const nextDeps = {
-        prev: next,
+        cur: next,
         next: []
     };
     let result: boolean = false;
 
-    next.forEach((e, i) => {
-        const partialDiff = Object.is(prev[i], next[i]);
-        console.log('###是否', prev[i], next[i], partialDiff)
+    next.forEach((_, i) => {
+        const partialDiff = Object.is(cur[i], next[i]);
         if (!partialDiff) {
             result = true
             return
@@ -60,16 +62,12 @@ export const execEffects = (effects: Effects) => {
 
     effectsArr.forEach(effect => {
         const count = Number(effect[0]);
-        const { callback, deps, unsubscribe } = effect[1];
-
-        console.log('###执行effect count', count);
-        console.log('###执行effect callback', callback);
-        console.log('###执行effect deps', deps);
-        console.log('###执行effect unsubscribe', unsubscribe);
-
-        const { result: shouldExecCallback, deps: newDeps } = compareDepsAndReturnNewDeps(deps.prev, deps.next);
-        console.log('###是否需要执行callback', shouldExecCallback)
-        shouldExecCallback && callback();
+        const { callback, deps } = effect[1];
+        const { result: shouldExecCallback, deps: newDeps } = compareDepsAndReturnNewDeps(deps.cur, deps.next);
+        if (shouldExecCallback) {
+            const unsubscribe = callback();
+            effects[count].unsubscribe = unsubscribe;
+        }
         effects[count].deps = newDeps;
     })
 }
