@@ -12,12 +12,10 @@ export type Effects = { [key: number]: Effect };
 
 const useEffect = (callback: EffectCallback, deps: any[]) => {
     const { component, counter } = getCurrentContext();
-    console.log('%c###每次执行传进来的deps', 'background: yellow', deps)
 
     const effects = component.__effects__;
     if (!effects.hasOwnProperty(counter)) {
         // 初次挂载effect
-        console.log('%c###初次执行effect', 'background: cyan')
         effects[counter] = {
             callback,
             deps: { cur: deps, next: deps },
@@ -25,14 +23,11 @@ const useEffect = (callback: EffectCallback, deps: any[]) => {
         };
     } else {
         // 非初次
-        console.log('%c###后续执行effect', 'background: orange', effects[counter]);
         effects[counter] = {
             callback,
             deps: { cur: effects[counter].deps.cur, next: deps },
             unsubscribe: effects[counter].unsubscribe
         }
-        console.log('%c###后续执行effect结束', 'background: red', effects[counter]);
-
     }
 };
 
@@ -57,18 +52,22 @@ const compareDepsAndReturnNewDeps = (cur: any[], next: any[]) => {
     }
 }
 
-export const execEffects = (effects: Effects) => {
+export const execEffects = (effects: Effects, type: 'render' | 'update') => {
     const effectsArr = Object.entries(effects);
 
     effectsArr.forEach(effect => {
         const count = Number(effect[0]);
         const { callback, deps } = effect[1];
-        const { result: shouldExecCallback, deps: newDeps } = compareDepsAndReturnNewDeps(deps.cur, deps.next);
-        if (shouldExecCallback) {
+        if (type === 'update') {
+            const { result: shouldExecCallback, deps: newDeps } = compareDepsAndReturnNewDeps(deps.cur, deps.next);
+            if (shouldExecCallback) {
+                callback();
+            }
+            effects[count].deps = newDeps;
+        } else {
             const unsubscribe = callback();
             effects[count].unsubscribe = unsubscribe;
         }
-        effects[count].deps = newDeps;
     })
 }
 

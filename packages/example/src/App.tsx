@@ -1,12 +1,17 @@
-import withHooks, { useState, useEffect, useMemo } from "with-hooks";
+import withHooks, { useState, useEffect, useMemo, useRef } from "with-hooks";
 
 const Son = withHooks((props: { name: string }) => {
   const [depCount, setDepCount] = useState<number>(0);
   const [norCount, setNorCount] = useState<number>(0);
   const [count, setCount] = useState<number>(() => 0);
+  const testRef = useRef(null);
   const memoName = useMemo<string>(() => {
     return props.name + '-memo'
   }, [props.name]);
+
+  useEffect(() => {
+    console.log('###ref', testRef)
+  }, [])
 
   useEffect(() => {
     // const num = Math.random() * 10
@@ -29,7 +34,7 @@ const Son = withHooks((props: { name: string }) => {
         }} />
         state change:{depCount}
       </div>
-      <div>
+      <div ref={testRef}>
         输入框的受控值不是effect的依赖项:<input onChange={(e) => {
           const { value } = e.target;
           setNorCount(Number(value))

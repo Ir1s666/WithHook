@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Effects, execEffects} from './hooks/useEffect';
-import {updateCurrentComponent, initStateCounter} from './componentContext';
+import { Effects, execEffects } from './hooks/useEffect';
+import { updateCurrentComponent, initStateCounter } from './componentContext';
 
 type FuncComp<T> = (props: T) => React.ReactNode;
 
@@ -8,6 +8,7 @@ export declare class WithHookComp extends React.Component {
     state: { [key: number]: any }
     __setters__: { [key: number]: (payload: unknown | ((prevState: unknown) => unknown)) => void }
     __effects__: Effects
+    __refs__: { [key: number]: React.RefObject<any> }
 }
 
 function bindComponentWithProps<T = {}>(funcComp: FuncComp<T>, compInstance: WithHookComp) {
@@ -22,6 +23,7 @@ function withHooks<Props>(funcComp: (props: Props) => React.ReactNode) {
     return class extends React.Component<Props> {
         public __setters__ = {}
         public __effects__ = {}
+        public __refs__ = {}
         public state: { [key: number]: any }
 
         constructor(props: Props) {
@@ -31,13 +33,11 @@ function withHooks<Props>(funcComp: (props: Props) => React.ReactNode) {
         }
 
         componentDidMount(): void {
-            console.log('###初始化effect')
-            execEffects(this.__effects__);
+            execEffects(this.__effects__, 'render');
         }
 
         componentDidUpdate(): void {
-            console.log('###didupdate 执行effect');
-            execEffects(this.__effects__);
+            execEffects(this.__effects__, 'update');
         }
     }
 }
