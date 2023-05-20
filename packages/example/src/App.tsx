@@ -1,9 +1,12 @@
-import withHooks, { useState, useEffect } from "with-hooks";
+import withHooks, { useState, useEffect, useMemo } from "with-hooks";
 
 const Son = withHooks((props: { name: string }) => {
   const [depCount, setDepCount] = useState<number>(0);
   const [norCount, setNorCount] = useState<number>(0);
   const [count, setCount] = useState<number>(() => 0);
+  const memoName = useMemo<string>(() => {
+    return props.name + '-memo'
+  }, [props.name]);
 
   useEffect(() => {
     // const num = Math.random() * 10
@@ -38,6 +41,9 @@ const Son = withHooks((props: { name: string }) => {
       </div>
       <div>
         子组件props.name: {props.name}
+      </div>
+      <div>
+        memoName: {memoName}
       </div>
     </div>
 
